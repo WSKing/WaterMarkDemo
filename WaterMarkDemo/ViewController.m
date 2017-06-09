@@ -19,7 +19,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    UIImage *bgImg = [[UIImage imageWithColor:[UIColor whiteColor]] scaledToSize:CGSizeMake(SCREEN_WIDTH * 3, SCREEN_HEIGHT *2)];
+    UIImage *bgImg = [UIImage imageWithColor:[UIColor whiteColor]];
     UIImage *drawImg = [self addWatemarkTextAfteriOS7_WithLogoImage:bgImg watemarkText:@"我是水印"];
     self.markImage = [self rotationImage:drawImg];
     [self.tableView setContentMode:UIViewContentModeBottomRight];
@@ -28,6 +28,7 @@
 
 }
 
+#pragma mark --delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 10;
 }
@@ -44,14 +45,14 @@
     return cell;
 }
 
-
+#pragma mark --getters
 - (UITableView *)tableView {
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH,SCREEN_HEIGHT) style:UITableViewStylePlain];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.rowHeight = 60;
-        UIView *headView = [UIView new];
+        UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 150)];
         headView.backgroundColor = [UIColor clearColor];
         _tableView.tableHeaderView = headView;
         UIView *footerView = [UIView new];
@@ -62,6 +63,7 @@
     return _tableView;
 }
 
+#pragma mark --actions
 //文字水印
 - (UIImage *)addWatemarkTextAfteriOS7_WithLogoImage:(UIImage *)logoImage watemarkText:(NSString *)watemarkText {
     int w = SCREEN_WIDTH*3;
@@ -72,10 +74,10 @@
     UIFont * font = [UIFont systemFontOfSize:10.0];
    
     NSInteger line = SCREEN_HEIGHT*3/ 100; //多少行
-    NSInteger row = 20;
+    NSInteger row = 8;
     for (int i = 0; i < line; i ++) {
         for (int j = 0; j < row; j ++) {
-             [watemarkText drawInRect:CGRectMake(j * (SCREEN_WIDTH/3.5), (i-3)*100, 90, 25) withAttributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:[UIColor redColor]}];
+             [watemarkText drawInRect:CGRectMake(j * (SCREEN_WIDTH/3.5), i*100, 90, 25) withAttributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:[UIColor redColor]}];
         }
     }
     UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -95,6 +97,7 @@
     rect = CGRectMake(0, 0, image.size.height, image.size.width);
     translateX = 0;
     translateY = -rect.size.width;
+    //铺满屏幕的关键↓↓↓
     scaleY = rect.size.width/rect.size.height *1.5;
     scaleX = rect.size.height/rect.size.width *1.5;
     
